@@ -24,13 +24,14 @@
     <script>
       require([
         "esri/Map",
+        "esri/WebMap",
         "esri/views/MapView",
         "esri/layers/FeatureLayer",
         "esri/symbols/WebStyleSymbol",
         "esri/Basemap",
         "esri/rest/support/TopFeaturesQuery",
         "esri/rest/support/TopFilter"
-      ], (Map, MapView, FeatureLayer, WebStyleSymbol, Basemap, TopFeaturesQuery, TopFilter) =>
+      ], (Map, WebMap, MapView, FeatureLayer,  WebStyleSymbol, Basemap, TopFeaturesQuery, TopFilter) =>
         (async () => {
           // dark human geography basemap
           const basemap = new Basemap({
@@ -47,6 +48,13 @@
             popupTemplate: createPopupTemplate()
           });
 
+          /* https://www.arcgis.com/home/item.html?id=63e9481acb8947318c7d5150b00b06c9 */
+          const webmap = new WebMap({
+            portalItem: {
+              id: "63e9481acb8947318c7d5150b00b06c9"
+            }
+          });
+
           const map = new Map({
             basemap,
             layers: [layer]
@@ -54,25 +62,30 @@
 
           const view = new MapView({
             container: "viewDiv",
-            map: map,
-            center: [-97.75188, 37.23308],
-            zoom: 3,
+            map: webmap,
+            center: [-111.168, 32.243],
+            zoom: 17,
             padding: {
               right: 380
             }
           });
-          const layerView = await view.whenLayerView(layer);
+          const layerView = await view.whenLayerView(webmap);
 
           // get UI components involved in top features query
           const orderDirectionSelection = document.getElementById("orderDirectionSelection");
           const orderByFieldSelection = document.getElementById("orderByFieldSelect");
           const clearQueryButton = document.getElementById("clear-query");
           const queryParksButton = document.getElementById("query-parks");
+          const querySelection = document.getElementById("queryControl");
+          const tileSelection = document.getElementById("tileControl");
 
           // This function runs when user clicks on query parks button
           document.getElementById("query-parks").addEventListener("click", async () => {
             clearQueryButton.appearance = "outline";
             queryParksButton.appearance = "solid";
+
+            console.log("queryControl: ", querySelection.value);
+            console.log("tileControl: ", tileSelection);
 
             // check if the user wants to select the most or least visited parks
             // in each state
@@ -107,11 +120,7 @@
               item.setAttribute("label", attributes.Park);
               item.setAttribute("value", index);
 
-              const visitorTotal = orderByFieldSelection.selectedOption.value;
-              const total = `Total visitors: ${attributes[visitorTotal]}`;
-              const state = `State: ${attributes.State}`;
-              const description = total + " " + state;
-              item.setAttribute("description", description);
+              item.setAttribute("description", index);
               item.addEventListener("click", parkResultClickHandler);
               document.getElementById("results").appendChild(item);
             });
@@ -234,7 +243,7 @@
               <!--<div class="cardText"></div>-->
           </div>
           <div class="iconBx">
-              <ion-icon name="leaf-outline"></ion-icon>
+              <ion-icon name="flower-outline"></ion-icon>
           </div>
       </div>
 
@@ -310,26 +319,29 @@
     </calcite-panel>
     <div>
       <calcite-segmented-control id="queryControl" layout="horizontal">
-        <calcite-segmented-control-item value="DESC" checked> Plants </calcite-segmented-control-item>
-        <calcite-segmented-control-item value="ASC"> Animals </calcite-segmented-control-item>
-        <calcite-segmented-control-item value="ASC"> Facilities </calcite-segmented-control-item>
+        <calcite-segmented-control-item value="Plants" checked> Plants </calcite-segmented-control-item>
+        <calcite-segmented-control-item value="Animals"> Animals </calcite-segmented-control-item>
+        <calcite-segmented-control-item value="Facilities"> Facilities </calcite-segmented-control-item>
       </calcite-segmented-control>
     </div>
-    <calcite-tile-select-group>
+    <calcite-tile-select-group id="tileControl">
         <calcite-tile-select checked input-enabled input-alignment="end" icon="brightness" 
             heading="Plants"
             description="Query for plants"
-            type="checkbox">
+            type="checkbox"
+            value="Plants">
         </calcite-tile-select>
         <calcite-tile-select input-enabled input-alignment="end" icon="walking"
             heading="Animals"
             description="Query for animals"
-            type="checkbox">
+            type="checkbox"
+            value="Animals">
         </calcite-tile-select>
         <calcite-tile-select input-enabled input-alignment="end" icon="locator"
             heading="Facilities"
             description="Query for facilities"
-            type="checkbox">
+            type="checkbox"
+            value="Facilities">
         </calcite-tile-select>
     </calcite-tile-select-group>
   </body>
