@@ -11,11 +11,15 @@
 
 :root {
   /* Colors */
-  --theme-brand: #d5501c;
-  --theme-brand2: #be3e0b;
+  /* --theme-brand: #d5501c;
+  --theme-brand-dark: #be3e0b;
+  --theme-brand-light: #ec6a1f; */
+  --theme-brand: #8b2346;
+  --theme-brand-dark: #701732;
+  --theme-brand-light: #a9365a;
   --titleHeight: 60px;
   --blue: #2a2185;
-  --white: #fff;
+  --white: #fafafa;
   --gray: #f5f5f5;
   --black1: #222;
   --black2: #999;
@@ -34,7 +38,7 @@ body {
 
 h1{
   padding: 0 1rem;
-  color: ivory;
+  color: var(--white);
 }
 
 #viewDiv {
@@ -51,8 +55,8 @@ h1{
   position: absolute;
   top: calc(10px + var(--titleHeight));
   right: 10px;
-  --calcite-color-brand: #71c96e;
-  --calcite-color-brand-hover: #67b564;
+  --calcite-color-brand: var(--theme-brand);
+  --calcite-color-brand-hover: var(--theme-brand-dark);
 }
 
 #resultsDiv {
@@ -89,54 +93,123 @@ body {
   justify-content:space-between;
   align-items: center;
   padding: 0 10px;
-  color: var(--black1);
+  color: var(--blue);
 }
 
-.search {
-  position: relative;
-  width: 400px;
+.topbar .topBtn {
+  width: 130px;
   margin: 0 10px;
-}
-
-.search label {
-  position: relative;
-  width: 100%;
-}
-
-.search label input {
-  width: 100%;
   height: 40px;
-  border-radius: 40px;
-  padding: 5px 20px;
-  padding-left: 35px;
+  border-radius: 16px;
+  padding: 5px 7px;
   font-size: 18px;
-  outline: none;
-  border: 1px solid var(--black2);
+  display: flex;
+  align-items: center;
+  justify-content: space-around;
+  cursor: pointer;
+  background-color: var(--gray);
+  border: none;
 }
 
-.search label ion-icon {
-  position: absolute;
+.topbar .topBtn ion-icon {
+  font-size: 1.6rem;
+}
+
+.topbar .topBtn:hover {
+  background-color: var(--blue);
+  color: var(--white)
+}
+
+/* ======================= Modal ====================== */
+/* The Modal (background) */
+.modal {
+  display: none; 
+  position: fixed;
+  z-index: 100; 
+  padding-top: 200px; /* Location of the box */
+  left: 0;
   top: 0;
-  left: 10px;
-  font-size: 1.2rem;
+  width: 100%; /* Full width */
+  height: 100%; /* Full height */
+  overflow: auto; /* Enable scroll if needed */
+  background-color: rgb(0,0,0); /* Fallback color */
+  background-color: rgba(0,0,0,0.4); /* Black w/ opacity */
 }
 
+/* Modal Content */
+.modal-content {
+  position: relative;
+  background-color: var(--white);
+  margin: auto;
+  padding: 0;
+  border: 1px solid var(--black1);
+  width: 80%;
+  max-width: 1000px;
+  box-shadow: 0 4px 8px 0 rgba(0,0,0,0.2),0 6px 20px 0 rgba(0,0,0,0.19);
+  -webkit-animation-name: animatetop;
+  -webkit-animation-duration: 0.4s;
+  animation-name: animatetop;
+  animation-duration: 0.4s;
+  line-height: 2.0rem;
+}
 
-/* ======================= Cards ====================== */
-.cardBox {
+/* Add Animation */
+@-webkit-keyframes animatetop {
+  from {top:-300px; opacity:0} 
+  to {top:0; opacity:1}
+}
+
+@keyframes animatetop {
+  from {top:-300px; opacity:0}
+  to {top:0; opacity:1}
+}
+
+/* The Close Button */
+.close {
+  color: var(--white);
+  float: right;
+  font-size: 32px;
+  font-weight: bold;
+}
+
+.close:hover,
+.close:focus {
+  color: #000;
+  text-decoration: none;
+  cursor: pointer;
+}
+
+.modal-header {
+  padding: 8px 16px;
+  background-color: var(--theme-brand-light);
+  color: var(--white);
+  line-height: 2.4rem;
+}
+
+.modal-body {padding: 16px 16px;}
+
+.modal-footer {
+  padding: 2px 16px;
+  background-color: var(--theme-brand-light);
+  color: var(--white);
+}
+
+/* ======================= Buttons ====================== */
+
+.buttonBox {
   z-index: 10;
   position: absolute;
   width: 60%;
-  border: pink 2px solid;
-  margin: 0 6em;
+  border: purple 2px solid;
+  margin: 0em 6em;
   padding: 20px 40px;
   display: grid;
-  grid-template-columns: repeat(4, 1fr);
-  grid-gap: 50px;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 50px;
   transition: 0.5s;
 }
 
-.cardBox .card {
+.buttonBox .btn {
   position: relative;
   background: var(--white);
   padding: 10px 20px;
@@ -147,9 +220,10 @@ body {
   align-items: center;
   cursor: pointer;
   box-shadow: 0 7px 25px rgba(0, 0, 0, 0.08);
+  border: none;
 }
 
-.cardBox .card .cardTitle {
+.buttonBox .btn .btnTitle {
   position: relative;
   font-weight: 500;
   font-size: 1.3rem;
@@ -157,14 +231,7 @@ body {
   margin: 0;
   padding: 0;
 }
-
-.cardBox .card .cardText {
-  color: var(--black2);
-  font-size: 1.1rem;
-  margin-top: 5px;
-}
-
-.cardBox .card .iconBx {
+.buttonBox .btn .iconBx {
   font-size: 2.3rem;
   color: var(--black2);
   align-items: center;
@@ -172,76 +239,110 @@ body {
   padding-top: 0.3rem;
 }
 
-.cardBox .card:hover {
-  background: var(--theme-brand2);
+.buttonBox .btn:hover,
+.buttonBox .btn.selected:hover {
+  background: var(--theme-brand);
 }
-.cardBox .card:hover .cardTitle,
-.cardBox .card:hover .cardText,
-.cardBox .card:hover .iconBx {
+.buttonBox .btn:hover .btnTitle,
+.buttonBox .btn:hover .btnText,
+.buttonBox .btn:hover .iconBx {
   color: var(--white);
 }
 
+.buttonBox .btn:active,
+.buttonBox .btn.selected:active {
+  background-color: var(--theme-brand-dark);
+}
 
+.buttonBox .btn.selected {
+  background-color:  lightskyblue;
+}
+
+.buttonBox .icon {
+  display: none;
+}
 
 /* ====================== Responsive Design ========================== */
-@media (max-width: 991px) {
-  .navigation {
-    left: -300px;
+@media (max-width: 1200px) {
+  .topbar h1 {
+    font-size: 1.6rem;
   }
-  .navigation.active {
-    width: 300px;
-    left: 0;
-  }
-  .main {
-    width: 100%;
-    left: 0;
-  }
-  .main.active {
-    left: 300px;
-  }
-  .cardBox {
+
+  .buttonBox {
     grid-template-columns: repeat(2, 1fr);
   }
 }
 
-@media (max-width: 768px) {
-  .details {
-    grid-template-columns: 1fr;
+@media (max-width: 991px) {
+  .topbar h1 {
+    font-size: 1.4rem;
+    padding: 0rem 0.3rem;
+    margin: 0;
   }
-  .recentOrders {
-    overflow-x: auto;
+
+  .topbar .topBtn {
+    font-size: 0.9rem;
+    width: 80px;
+    margin: 0;
   }
-  .status.inProgress {
-    white-space: nowrap;
+
+  .topbar .topBtn ion-icon {
+    font-size: 1.4rem;
+  }
+
+  .buttonBox {
+    grid-template-columns: repeat(1, 1fr);
+    margin: 0 4em;
+    padding: 20px 20px;
+    gap: 10px;
+    width: 40%;
+  }
+  .buttonBox .btn {display: none;}
+
+  .buttonBox .btn {
+    padding: 10px 20px;
+    border-radius: 20px;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    box-shadow: 0 7px 25px rgba(0, 0, 0, 0.08);
+  }
+  
+  .buttonBox .btn .btnTitle {
+    font-weight: 500;
+    font-size: 1.3rem;
+    float: inline-start;
+    padding-top: 0.1rem;
+  }
+  
+  .buttonBox .btn .iconBx {
+    font-size: 1.5rem;
+    align-items: center;
+    margin: 0;
+    padding-top: 0.0rem;
+    float: inline-end;
+  }
+
+  .buttonBox button.icon {
+    float: left;
+    display: block;
+    font-weight: 500;
+    font-size: 2.0rem;
+    box-shadow: 0 7px 25px rgba(0, 0, 0, 0.08);
+    background: var(--white);
+    color: var(--blue);
+    width: fit-content;
+    padding: 0.3rem 0.3rem 0rem 0.3rem;
+    border-radius: 10px;
+  }
+
+  .buttonBox.responsive .btn:not(:first-child) {
+    float: left;
+    display: block;
+    text-align: left;
+    width: 10rem;
   }
 }
 
-@media (max-width: 480px) {
-  .cardBox {
-    grid-template-columns: repeat(1, 1fr);
-  }
-  .cardHeader h2 {
-    font-size: 20px;
-  }
-  .user {
-    min-width: 40px;
-  }
-  .navigation {
-    width: 100%;
-    left: -100%;
-    z-index: 1000;
-  }
-  .navigation.active {
-    width: 100%;
-    left: 0;
-  }
-  .toggle {
-    z-index: 10001;
-  }
-  .main.active .toggle {
-    color: #fff;
-    position: fixed;
-    right: 0;
-    left: initial;
-  }
-}
+
+
