@@ -117,19 +117,21 @@ require([
                   }
                 }]
               },
-              popupTemplate: createPopupTemplate()
+              //popupTemplate: createPopupTemplate()
             });
 
             const layerPoints = new FeatureLayer({
               url: "https://services.arcgis.com/HRPe58bUyBqyyiCt/arcgis/rest/services/Map_Points/FeatureServer",
               outFields: ["*"],
-              popupTemplate: createPopupTemplate()
+              renderer: await setLayerPointsRenderer(),
+              //popupTemplate: createPopupTemplate()
             });
             
             const layerDetailedPoints = new FeatureLayer({
               url: "https://services.arcgis.com/HRPe58bUyBqyyiCt/arcgis/rest/services/Detailed_Points/FeatureServer",
               outFields: ["*"],
-              popupTemplate: createPopupTemplate()
+              renderer: await setLayerDetailedPointsRenderer(),
+              //popupTemplate: createPopupTemplate()
             });
 
     /* Link to Arizona-Sonora Desert Museum wayfinding Web Map */
@@ -352,7 +354,7 @@ require([
       document.getElementById("results").innerHTML = "";
     });
 
-    async function setExhibitRenderer() {
+    async function setExhibitRendererExample() {
       const symbol = new WebStyleSymbol({
         name: "park",
         styleName: "Esri2DPointSymbolsStyle"
@@ -368,6 +370,105 @@ require([
         symbol: cimSymbol
       };
     }
+
+    // async renderer functions to get external symbol pngs
+    async function setLayerPointsRenderer() {
+      let layerPointsRenderer = {
+        type: "unique-value", // autocasts as new UniqueValueRenderer()
+        field: "Type",
+        uniqueValueInfos: [{
+          value: "Accessible Restroom",
+          symbol: {
+            type: "picture-marker",
+            url: "https://steslowj.github.io/geog777_proj2/img/restroom.png",
+            width: "20px",
+            height: "20px",
+          }
+        }, {
+          value: "Entrance/Exit",
+          symbol: {
+            type: "picture-marker",
+            url: "https://steslowj.github.io/geog777_proj2/img/star.png",
+            width: "20px",
+            height: "20px",
+          }
+        }, {
+          value: "First Aid",
+          symbol: {
+            type: "picture-marker",
+            url: "https://steslowj.github.io/geog777_proj2/img/firstaid.png",
+            width: "20px",
+            height: "20px",
+          }
+        }, {
+          value: "Food & Drink",
+          symbol: {
+            type: "picture-marker",
+            url: "https://steslowj.github.io/geog777_proj2/img/food.png",
+            width: "20px",
+            height: "20px",
+          }
+        }, {
+          value: "Gift Shop",
+          symbol: {
+            type: "picture-marker",
+            url: "https://steslowj.github.io/geog777_proj2/img/cart.png",
+            width: "20px",
+            height: "20px",
+          }
+        }, {
+          value: "Restrooms",
+          symbol: {
+            type: "picture-marker",
+            url: "https://steslowj.github.io/geog777_proj2/img/restroom.png",
+            width: "20px",
+            height: "20px",
+          }
+        }, {
+          value: "Water Fountains",
+          symbol: {
+            type: "picture-marker",
+            url: "https://steslowj.github.io/geog777_proj2/img/droplet.png",
+            width: "20px",
+            height: "20px",
+          }
+        }]
+      };
+      return layerPointsRenderer
+    }
+
+    async function setLayerDetailedPointsRenderer() {
+      let layerDetailedPointsRenderer = {
+        type: "unique-value", // autocasts as new UniqueValueRenderer()
+        field: "category",
+        uniqueValueInfos: [{
+          value: "Facility",
+          symbol: {
+            type: "picture-marker",
+            url: "https://steslowj.github.io/geog777_proj2/img/facility.png",
+            width: "20px",
+            height: "20px",
+          }
+        }, {
+          value: "Animal",
+          symbol: {
+            type: "picture-marker",
+            url: "https://steslowj.github.io/geog777_proj2/img/pawprint.png",
+            width: "20px",
+            height: "20px",
+          }
+        }, {
+          value: "Plant",
+          symbol: {
+            type: "picture-marker",
+            url: "https://steslowj.github.io/geog777_proj2/img/flower.png",
+            width: "20px",
+            height: "20px",
+          }
+        }]
+      };
+      return layerDetailedPointsRenderer
+    }    
 
     function createPopupTemplate() {
       return {
