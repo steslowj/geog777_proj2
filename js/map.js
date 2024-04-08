@@ -14,7 +14,11 @@ require([
   "esri/rest/support/TopFeaturesQuery",
   "esri/rest/support/TopFilter",
   "esri/symbols/WebStyleSymbol",
-  "esri/views/MapView"
+  "esri/views/MapView",
+  "esri/widgets/Expand",
+  "esri/widgets/Home",
+  "esri/widgets/LayerList",
+  "esri/widgets/Locate"
 ], (
     esriConfig, 
     Basemap, 
@@ -27,11 +31,15 @@ require([
     ControlPointsGeoreference, 
     ImageElement, 
     TileLayer,
-    UniqueValueRenderer, 
+    UniqueValueRenderer,
     TopFeaturesQuery, 
     TopFilter,
     WebStyleSymbol, 
-    MapView
+    MapView,
+    Expand,
+    Home,
+    LayerList,
+    Locate
     ) =>
   (async () => {
 
@@ -54,7 +62,7 @@ require([
 
 
     // Define layers digitized from Desert Museum map handout and hosted by steslow@wisc.edu_UW_Mad
-            const layer = new FeatureLayer({
+            const layerDirtPaths = new FeatureLayer({
               url: "https://services.arcgis.com/HRPe58bUyBqyyiCt/arcgis/rest/services/Desert_Museum_Dirt_Paths/FeatureServer",
               outFields: ["*"],
             });
@@ -79,9 +87,9 @@ require([
                   value: "Building",
                   symbol: {
                     type: "simple-fill", // autocasts as new SimpleFillSymbol()
-                    color: [70, 0, 250, 0.1],
+                    color: [70, 0, 250, 0.2],
                     outline: { // autocasts as new SimpleLineSymbol()
-                      color: [70, 0, 250, 0.3],
+                      color: [70, 0, 250, 0.5],
                       width: "1px"
                     }
                   }
@@ -117,21 +125,39 @@ require([
                   }
                 }]
               },
-              //popupTemplate: createPopupTemplate()
+              popupTemplate: {
+                title: "{Name}",
+                content: [{
+                  type: "text", // autocasts as new TextContext
+                  text: "<p>{Description}</p>"
+                }]
+              }
             });
 
             const layerPoints = new FeatureLayer({
               url: "https://services.arcgis.com/HRPe58bUyBqyyiCt/arcgis/rest/services/Map_Points/FeatureServer",
               outFields: ["*"],
               renderer: await setLayerPointsRenderer(),
-              //popupTemplate: createPopupTemplate()
+              popupTemplate: {
+                title: "{Type}",
+                content: [{
+                  type: "text", // autocasts as new TextContext
+                  text: "<p>{Name}</p>"
+                }]
+              }
             });
             
             const layerDetailedPoints = new FeatureLayer({
               url: "https://services.arcgis.com/HRPe58bUyBqyyiCt/arcgis/rest/services/Detailed_Points/FeatureServer",
               outFields: ["*"],
               renderer: await setLayerDetailedPointsRenderer(),
-              //popupTemplate: createPopupTemplate()
+              popupTemplate: {
+                title: "{name} ({category})",
+                content: [{
+                  type: "text", // autocasts as new TextContext
+                  text: "<p>{description}</p><img src='{thumb_url}'>"
+                }]
+              }
             });
 
     /* Link to Arizona-Sonora Desert Museum wayfinding Web Map */
@@ -142,9 +168,11 @@ require([
     //   }
     // });
 
+    const layers = [layerAerial, layerDirtPaths, layerPavedPaths, layerStructures, layerExhibits, layerPoints, layerDetailedPoints]
+
     const map = new Map({
       basemap,
-      layers: [layer, layerPavedPaths, layerStructures, layerExhibits, layerPoints, layerDetailedPoints]
+      layers: layers
     });
 
     const view = new MapView({
@@ -156,12 +184,48 @@ require([
         right: 380
       }
     });
+    
+    const locateBtn = new Locate({
+      view: view
+    });
 
+    view.ui.add(locateBtn, {
+      position: "top-left"
+    });
+
+    const homeBtn = new Home({
+      view: view
+    });
+
+    view.ui.add(homeBtn, "top-left");
+
+    // Add a legend intance of the panel of a ListItem in a LayerList instance
+    const layerList = new LayerList({
+      view: view,
+      container: document.createElement("div"), // assign to a div to use with Expand
+      listItemCreatedFunction: (event) => {
+        const item = event.item;
+        if (item.layer.type != "group") {
+          // don't show legend twice
+          item.panel = {
+            content: "legend",
+            open: true
+          };
+        }
+      }
+    });
+    //view.ui.add(layerList, "bottom-left");
+
+    const bgExpand = new Expand({
+      view: view,
+      content: layerList
+    });
+
+    view.ui.add(bgExpand, "bottom-left");
 
 
     // creating parameters to add Desert Museum Illustration PNG and georeference it
     // currently doesn't seem to add the image to the application
-
     const addIllustrationMediaLayer = async () => {
 
       // view.constraints.maxScale = 10000;
@@ -262,47 +326,65 @@ require([
         await mediaLayer.when();
 
     };
-
     //addIllustrationMediaLayer();
 
 
 
-    const layerView = await view.whenLayerView(layer);
+    const layerView = await view.whenLayerView(layerDetailedPoints);
 
 
     // get UI components involved in top features query
     const plantsSelection = document.getElementById("plantsBtn");
     const animalsSelection = document.getElementById("animalsBtn");
     const facilitiesSelection = document.getElementById("facilitiesBtn");
-    const eventsSelection = document.getElementById("eventsBtn");
 
     const clearQueryButton = document.getElementById("clear-query");
-    const queryParksButton = document.getElementById("query-parks");
+    const runQueryButton = document.getElementById("run-query");
 
-    // This function runs when user clicks on query parks button
-    document.getElementById("query-parks").addEventListener("click", async () => {
+    // This function runs when user clicks on run-query button
+    document.getElementById("run-query").addEventListener("click", async () => {
       clearQueryButton.appearance = "outline";
-      queryParksButton.appearance = "solid";
+      runQueryButton.appearance = "solid";
 
+    // Building the SQL where clause based on selection of plant/animal/facility buttons
+      let whereClause = (plantsSelection.value == "") ? 
+        "category = ''": "category = Plant";
+      
+      whereClause = (animalsSelection.value == "") ? 
+        whereClause: whereClause + " AND " + "Animal";
+      
+      whereClause = (facilitiesSelection.value == "") ?
+        whereClause: whereClause + " AND " + "Facility = '" + headSelection.value + "'";
+      
+        
+      console.log(whereClause);
+
+      // query all features from the layer and only return
+      // attributes specified in outFields.
+      const query = { // autocasts as Query
+        where: whereClause,
+        returnGeometry: true,
+        outFields: ["name", "category", "description", "thumb_url"],
+        orderByFields: ["name"]
+      };
 
 
       // TopFeatureQuery parameter for the queryTopFeatures method collect user inputs 
       query = new TopFeaturesQuery({
         topFilter: new TopFilter({
           topCount: parseInt(topCountSelect.selectedOption.value),
-          groupByFields: ["State"],
-          orderByFields: orderByField
+          groupByFields: ["category"],
+          orderByFields: ["name"]
         }),
-        orderByFields: orderByField,
-        outFields: ["State, TOTAL, F2018, F2019, F2020, Park"],
+        outFields: ["name, description, thumb_url"],
         returnGeometry: true,
         cacheHint: false
       });
-      const results = await layer.queryTopFeatures(query);
+      const results = await layerDetailedPoints.queryTopFeatures(query);
 
 
       document.getElementById("resultsDiv").style.display = "block";
-      document.getElementById("resultsHeading").innerHTML = `Results: ${results.features.length} parks`;
+      document.getElementById("resultsHeading").innerHTML = `Results: ${results.features.length} Points`;
       document.getElementById("results").innerHTML = "";
 
 
@@ -314,7 +396,7 @@ require([
         item.setAttribute("value", index);
 
         item.setAttribute("description", index);
-        item.addEventListener("click", parkResultClickHandler);
+        item.addEventListener("click", resultClickHandler);
         document.getElementById("results").appendChild(item);
       });
 
@@ -322,7 +404,7 @@ require([
 
       // set query for the queryTopObjectIds.
       query.orderByFields = [""];
-      const objectIds = await layer.queryTopObjectIds(query);
+      const objectIds = await layerDetailedPoints.queryTopObjectIds(query);
       layerView.filter = {
         objectIds
       };
@@ -330,7 +412,7 @@ require([
     });
 
     // this function runs when user clicks on items in the results list
-    function parkResultClickHandler(event) {
+    function resultClickHandler(event) {
       const target = event.target;
       const resultId = target.getAttribute("value");
 
@@ -354,22 +436,6 @@ require([
       document.getElementById("results").innerHTML = "";
     });
 
-    async function setExhibitRendererExample() {
-      const symbol = new WebStyleSymbol({
-        name: "park",
-        styleName: "Esri2DPointSymbolsStyle"
-      });
-
-      const cimSymbol = await symbol.fetchCIMSymbol();
-      const symbolLayer = cimSymbol.data.symbol.symbolLayers[0];
-      symbolLayer.size = 16;
-      cimSymbol.data.symbol.symbolLayers = [symbolLayer];
-
-      return {
-        type: "simple",
-        symbol: cimSymbol
-      };
-    }
 
     // async renderer functions to get external symbol pngs
     async function setLayerPointsRenderer() {
@@ -380,7 +446,7 @@ require([
           value: "Accessible Restroom",
           symbol: {
             type: "picture-marker",
-            url: "https://steslowj.github.io/geog777_proj2/img/restroom.png",
+            url: "https://steslowj.github.io/geog777_proj2/img/wheelchair.png",
             width: "20px",
             height: "20px",
           }

@@ -200,12 +200,11 @@ body {
   z-index: 10;
   position: absolute;
   width: 60%;
-  border: purple 2px solid;
   margin: 0em 6em;
   padding: 20px 40px;
   display: grid;
   grid-template-columns: repeat(3, 1fr);
-  gap: 50px;
+  gap: 30px;
   transition: 0.5s;
 }
 
@@ -214,7 +213,7 @@ body {
   background: var(--white);
   padding: 10px 20px;
   border-radius: 20px;
-  width: 14rem;
+  width: auto;
   display: flex;
   justify-content: space-between;
   align-items: center;
@@ -269,7 +268,7 @@ body {
   }
 
   .buttonBox {
-    grid-template-columns: repeat(2, 1fr);
+    grid-template-columns: repeat(3, 1fr);
   }
 }
 
