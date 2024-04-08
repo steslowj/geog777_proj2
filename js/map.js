@@ -56,7 +56,8 @@ require([
 
     // Define clipped aerial imagery layer from Desert Museum arcgis online hosted by Botany_ASDM
     const layerAerial = new TileLayer({
-      url: "https://tiles.arcgis.com/tiles/KlCTOkj6oMImilrU/arcgis/rest/services/ESRI_tiled2017/MapServer"
+      url: "https://tiles.arcgis.com/tiles/KlCTOkj6oMImilrU/arcgis/rest/services/ESRI_tiled2017/MapServer",
+      title: "Aerial Image"
     })
 
 
@@ -65,21 +66,45 @@ require([
             const layerDirtPaths = new FeatureLayer({
               url: "https://services.arcgis.com/HRPe58bUyBqyyiCt/arcgis/rest/services/Desert_Museum_Dirt_Paths/FeatureServer",
               outFields: ["*"],
+              labelsVisible: false,
+              renderer: {
+                type: "simple",
+                symbol: {
+                  type: "simple-line",
+                  color: [230, 200, 200, 1],
+                  width: "5px"
+                }
+              },
+              title: "Dirt Paths"
             });
 
             const layerPavedPaths = new FeatureLayer({
               url: "https://services.arcgis.com/HRPe58bUyBqyyiCt/arcgis/rest/services/Desert_Museum_Paved_Paths/FeatureServer",
               outFields: ["*"],
+              labelsVisible: false,
+              renderer: {
+                type: "simple",
+                symbol: {
+                  type: "simple-line",
+                  color: [240, 240, 240, 1],
+                  width: "5px"
+                }
+              },
+              title: "Paved Paths"              
             });
 
             const layerStructures = new FeatureLayer({
               url: "https://services.arcgis.com/HRPe58bUyBqyyiCt/arcgis/rest/services/Desert_Museum_Structures/FeatureServer",
               outFields: ["*"],
+              labelsVisible: false,
+              title: "Buildings"
             });
 
             const layerExhibits = new FeatureLayer({
               url: "https://services.arcgis.com/HRPe58bUyBqyyiCt/arcgis/rest/services/Desert_Museum_Map_Exhibits/FeatureServer",
               outFields: ["*"],
+              title: "Exhibit Areas",
+              labelsVisible: false,
               renderer: {
                 type: "unique-value", // autocasts as new UniqueValueRenderer()
                 field: "Type",
@@ -137,19 +162,23 @@ require([
             const layerPoints = new FeatureLayer({
               url: "https://services.arcgis.com/HRPe58bUyBqyyiCt/arcgis/rest/services/Map_Points/FeatureServer",
               outFields: ["*"],
+              popupEnabled: false,
+              labelsVisible: false,
               renderer: await setLayerPointsRenderer(),
-              popupTemplate: {
-                title: "{Type}",
-                content: [{
-                  type: "text", // autocasts as new TextContext
-                  text: "<p>{Name}</p>"
-                }]
-              }
+              // popupTemplate: {
+              //   title: "{Type}",
+              //   content: [{
+              //     type: "text", // autocasts as new TextContext
+              //     text: "<p>{Name}</p>"
+              //   }]
+              // }
             });
             
             const layerDetailedPoints = new FeatureLayer({
               url: "https://services.arcgis.com/HRPe58bUyBqyyiCt/arcgis/rest/services/Detailed_Points/FeatureServer",
               outFields: ["*"],
+              title: "Points with Details",
+              labelsVisible: false,
               renderer: await setLayerDetailedPointsRenderer(),
               popupTemplate: {
                 title: "{name} ({category})",
@@ -347,20 +376,19 @@ require([
       runQueryButton.appearance = "solid";
 
     // Building the SQL where clause based on selection of plant/animal/facility buttons
+    // Only allowing one attribute to be queried at a time
       let whereClause = (plantsSelection.value == "") ? 
-        "category = ''": "category = Plant";
+        "": "category = 'Plant'";
       
       whereClause = (animalsSelection.value == "") ? 
-        whereClause: whereClause + " AND " + "Animal";
+        whereClause: whereClause + "category = 'Animal'";
       
       whereClause = (facilitiesSelection.value == "") ?
-        whereClause: whereClause + " AND " + "Facility = '" + headSelection.value + "'";
+        whereClause: whereClause + "category = 'Facility'";
       
-        
-      console.log(whereClause);
+      //console.log(whereClause);
 
-      // query all features from the layer and only return
-      // attributes specified in outFields.
+      // query all features from the layer and only return attributes specified in outFields.
       const query = { // autocasts as Query
         where: whereClause,
         returnGeometry: true,
@@ -368,20 +396,7 @@ require([
         orderByFields: ["name"]
       };
 
-
-      // TopFeatureQuery parameter for the queryTopFeatures method collect user inputs 
-      query = new TopFeaturesQuery({
-        topFilter: new TopFilter({
-          topCount: parseInt(topCountSelect.selectedOption.value),
-          groupByFields: ["category"],
-          orderByFields: ["name"]
-        }),
-        outFields: ["name, description, thumb_url"],
-        returnGeometry: true,
-        cacheHint: false
-      });
-      const results = await layerDetailedPoints.queryTopFeatures(query);
-
+      const results = await layerDetailedPoints.queryFeatures(query);
 
       document.getElementById("resultsDiv").style.display = "block";
       document.getElementById("resultsHeading").innerHTML = `Results: ${results.features.length} Points`;
@@ -392,19 +407,17 @@ require([
       graphics.forEach((result, index) => {
         const attributes = result.attributes;
         const item = document.createElement("calcite-pick-list-item");
-        item.setAttribute("label", attributes.Park);
+        item.setAttribute("label", attributes.name);
         item.setAttribute("value", index);
+        item.setAttribute("description", attributes.description);
 
-        item.setAttribute("description", index);
         item.addEventListener("click", resultClickHandler);
         document.getElementById("results").appendChild(item);
       });
 
-
-
-      // set query for the queryTopObjectIds.
+      // set query for the queryObjectIds.
       query.orderByFields = [""];
-      const objectIds = await layerDetailedPoints.queryTopObjectIds(query);
+      const objectIds = await layerDetailedPoints.queryObjectIds(query);
       layerView.filter = {
         objectIds
       };
@@ -417,19 +430,22 @@ require([
       const resultId = target.getAttribute("value");
 
       // get the graphic corresponding to the clicked zip code
-      const result = resultId && graphics && graphics[parseInt(resultId, 10)];
+      const result = resultId && graphics && graphics[parseInt(resultId)];
 
       if (result) {
         view.openPopup({
           features: [result],
           location: result.geometry
         });
+        view.goTo({
+          center: result.geometry
+        });
       }
     }
 
     clearQueryButton.addEventListener("click", () => {
       clearQueryButton.appearance = "solid";
-      queryParksButton.appearance = "outline";
+      runQueryButton.appearance = "outline";
       layerView.filter = null;
       view.closePopup();
       document.getElementById("resultsHeading").innerHTML = `Results`;
@@ -536,48 +552,4 @@ require([
       return layerDetailedPointsRenderer
     }    
 
-    function createPopupTemplate() {
-      return {
-        title: "{Park}",
-        content: [
-          {
-            type: "fields",
-            fieldInfos: [
-              {
-                fieldName: "TOTAL",
-                label: "Total visits",
-                format: {
-                  places: 0,
-                  digitSeparator: true
-                }
-              },
-              {
-                fieldName: "F2018",
-                label: "2018",
-                format: {
-                  places: 0,
-                  digitSeparator: true
-                }
-              },
-              {
-                fieldName: "F2019",
-                label: "2019",
-                format: {
-                  places: 0,
-                  digitSeparator: true
-                }
-              },
-              {
-                fieldName: "F2020",
-                label: "2020",
-                format: {
-                  places: 0,
-                  digitSeparator: true
-                }
-              }
-            ]
-          }
-        ]
-      };
-    }
   })());

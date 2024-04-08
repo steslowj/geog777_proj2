@@ -16,7 +16,7 @@
   --theme-brand-light: #ec6a1f; */
   --theme-brand: #8b2346;
   --theme-brand-dark: #701732;
-  --theme-brand-light: #a9365a;
+  --theme-brand-light: #c73765;
   --titleHeight: 60px;
   --blue: #2a2185;
   --white: #fafafa;
@@ -57,6 +57,7 @@ h1{
   right: 10px;
   --calcite-color-brand: var(--theme-brand);
   --calcite-color-brand-hover: var(--theme-brand-dark);
+  --calcite-z-index-header: 10; /*the default is oddly high*/
 }
 
 #resultsDiv {
@@ -238,10 +239,21 @@ body {
   padding-top: 0.3rem;
 }
 
-.buttonBox .btn:hover,
+/* .buttonBox .btn:hover,
 .buttonBox .btn.selected:hover {
   background: var(--theme-brand);
+} */
+
+.buttonBox #plantsBtn:hover {
+  background: rgb(44, 164, 31);
 }
+.buttonBox #animalsBtn:hover {
+  background: orange;
+}
+.buttonBox #facilitiesBtn:hover {
+  background: lightpink;
+}
+
 .buttonBox .btn:hover .btnTitle,
 .buttonBox .btn:hover .btnText,
 .buttonBox .btn:hover .iconBx {
@@ -254,7 +266,11 @@ body {
 }
 
 .buttonBox .btn.selected {
-  background-color:  lightskyblue;
+  background-color:  var(--theme-brand-light);
+}
+.buttonBox .btn.selected .btnTitle,
+.buttonBox .btn.selected .iconBx {
+  color:  var(--gray);
 }
 
 .buttonBox .icon {

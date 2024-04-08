@@ -28,15 +28,25 @@ window.onclick = function(event) {
 /* ======================= Page to Map Interactions ====================== */
 
 function changeValue(x) {
+  
   /*x is the button id*/
   if (x.value === "") {
-    /*set the value and add class*/
+    
+    /*for a click on any queryBtn, reset class of all queryBtns*/
+    /*this allows for only one selected value at a time*/
+    allQueryBtns = document.getElementsByClassName("queryBtn");
+    for (let i = 0; i < allQueryBtns.length; i++) {
+      allQueryBtns[i].value = "";
+      allQueryBtns[i].className = "btn queryBtn";
+    };
+
+    /*set the value of clicked button (x) and add class*/
     x.value = "selected";
     x.className += " selected";
   } else {
-    /*remove 'selected' from value and reset class*/
+    /*remove 'selected' from value and reset classes*/
     x.value = ""
-    x.className = "btn"
+    x.className = "btn queryBtn"
   }
 }
 
