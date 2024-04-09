@@ -24,4 +24,4 @@ The website application with a query run on Plants:
 ![The website application with a query run on Plants](https://steslowj.github.io/geog777_proj2/screenshots/ExplorerApp.png)
 
 A screenshot of the about panel:
-![A screenshot of the about panel](https://steslowj.github.io/geog777_proj2/screenshots/aboput.png)
+![A screenshot of the about panel](https://steslowj.github.io/geog777_proj2/screenshots/about.png)
