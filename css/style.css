@@ -56,7 +56,7 @@ h1{
   top: calc(10px + var(--titleHeight));
   right: 10px;
   --calcite-color-brand: var(--theme-brand);
-  --calcite-color-brand-hover: var(--theme-brand-dark);
+  --calcite-color-brand-hover: var(--theme-brand-light);
   --calcite-z-index-header: 10; /*the default is oddly high*/
 }
 
@@ -154,6 +154,19 @@ body {
   line-height: 2.0rem;
 }
 
+.modal-content h3 {
+  line-height: 2.4rem;
+}
+
+.modal-content p:last-of-type {
+  margin-top: 1.5rem;
+}
+
+.modal-app-preview-title {
+  margin-top: 2rem;
+  margin-bottom: 1rem;
+}
+
 /* Add Animation */
 @-webkit-keyframes animatetop {
   from {top:-300px; opacity:0} 
@@ -195,6 +208,37 @@ body {
   color: var(--white);
 }
 
+.modal-app-preview-box {
+  border: 2px solid purple;
+  width: 80%;
+  margin: auto;
+  padding: 2px 4px;
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 20px;
+  transition: 0.5s;
+}
+
+.modal-app-preview {
+  background: var(--black2);
+  padding: 2px 4px;
+  border-radius: 10px;
+  width: auto;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  align-items: center;
+  cursor: pointer;
+  box-shadow: 0 7px 25px rgba(0, 0, 0, 0.08);
+}
+
+.modal-app-pic {
+  background-color: lightpink;
+  padding: 0;
+  margin: 0;
+  width: 100%;
+
+}
 /* ======================= Buttons ====================== */
 
 .buttonBox {
@@ -246,12 +290,15 @@ body {
 
 .buttonBox #plantsBtn:hover {
   background: rgb(44, 164, 31);
+  outline: var(--white) 2px solid;
 }
 .buttonBox #animalsBtn:hover {
   background: orange;
+  outline: var(--white) 2px solid;
 }
 .buttonBox #facilitiesBtn:hover {
   background: lightpink;
+  outline: var(--white) 2px solid;
 }
 
 .buttonBox .btn:hover .btnTitle,
@@ -285,10 +332,11 @@ body {
 
   .buttonBox {
     grid-template-columns: repeat(3, 1fr);
+    margin: 0em 3em;
   }
 }
 
-@media (max-width: 991px) {
+@media (max-width: 1000px) {
   .topbar h1 {
     font-size: 1.4rem;
     padding: 0rem 0.3rem;

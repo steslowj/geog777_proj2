@@ -49,7 +49,7 @@ require([
     // https://developers.arcgis.com/rest/basemap-styles/
     const basemap = new Basemap({
       style: {
-        id: "arcgis/streets-relief",
+        id: "arcgis/outdoor",
         language: "en" // displays basemap place labels in english
       }
     });
@@ -71,7 +71,7 @@ require([
                 type: "simple",
                 symbol: {
                   type: "simple-line",
-                  color: [230, 200, 200, 1],
+                  color: [210, 180, 160, 1],
                   width: "5px"
                 }
               },
@@ -86,7 +86,7 @@ require([
                 type: "simple",
                 symbol: {
                   type: "simple-line",
-                  color: [240, 240, 240, 1],
+                  color: [245, 245, 245, 1],
                   width: "5px"
                 }
               },
@@ -247,7 +247,8 @@ require([
 
     const bgExpand = new Expand({
       view: view,
-      content: layerList
+      content: layerList,
+      expandTooltip: "Expand LayerList"
     });
 
     view.ui.add(bgExpand, "bottom-left");
@@ -359,6 +360,7 @@ require([
 
 
 
+    /*filter associated with layerview associated with layerDetailedPoints*/
     const layerView = await view.whenLayerView(layerDetailedPoints);
 
 
@@ -368,61 +370,66 @@ require([
     const facilitiesSelection = document.getElementById("facilitiesBtn");
 
     const clearQueryButton = document.getElementById("clear-query");
-    const runQueryButton = document.getElementById("run-query");
+    //const runQueryButton = document.getElementById("run-query");
 
-    // This function runs when user clicks on run-query button
-    document.getElementById("run-query").addEventListener("click", async () => {
-      clearQueryButton.appearance = "outline";
-      runQueryButton.appearance = "solid";
+    // Grab collection of HTML elements with class name queryBtn and assign a function to
+    // run attribute query on layerDetailedPoints, filter map, and add results to side panel
+    allQueryBtns = document.getElementsByClassName("queryBtn");
+    for (let i = 0; i < allQueryBtns.length; i++) {
+      allQueryBtns[i].addEventListener("click", async () => {
+        clearQueryButton.appearance = "outline";
+        //runQueryButton.appearance = "solid";
 
-    // Building the SQL where clause based on selection of plant/animal/facility buttons
-    // Only allowing one attribute to be queried at a time
-      let whereClause = (plantsSelection.value == "") ? 
-        "": "category = 'Plant'";
-      
-      whereClause = (animalsSelection.value == "") ? 
-        whereClause: whereClause + "category = 'Animal'";
-      
-      whereClause = (facilitiesSelection.value == "") ?
-        whereClause: whereClause + "category = 'Facility'";
-      
-      //console.log(whereClause);
+      // Building the SQL where clause based on selection of plant/animal/facility buttons
+      // Only allowing one attribute to be queried at a time
+        let whereClause = (plantsSelection.value == "") ? 
+          "": "category = 'Plant'";
+        
+        whereClause = (animalsSelection.value == "") ? 
+          whereClause: whereClause + "category = 'Animal'";
+        
+        whereClause = (facilitiesSelection.value == "") ?
+          whereClause: whereClause + "category = 'Facility'";
+        
+        //console.log(whereClause);
 
-      // query all features from the layer and only return attributes specified in outFields.
-      const query = { // autocasts as Query
-        where: whereClause,
-        returnGeometry: true,
-        outFields: ["name", "category", "description", "thumb_url"],
-        orderByFields: ["name"]
-      };
+        // query all features from the layer and only return attributes specified in outFields.
+        const query = { // autocasts as Query
+          where: whereClause,
+          returnGeometry: true,
+          outFields: ["name", "category", "description", "thumb_url"],
+          orderByFields: ["name"]
+        };
 
-      const results = await layerDetailedPoints.queryFeatures(query);
+        const results = await layerDetailedPoints.queryFeatures(query);
 
-      document.getElementById("resultsDiv").style.display = "block";
-      document.getElementById("resultsHeading").innerHTML = `Results: ${results.features.length} Points`;
-      document.getElementById("results").innerHTML = "";
+        document.getElementById("resultsDiv").style.display = "block";
+        document.getElementById("resultsHeading").innerHTML = `Results: ${results.features.length} Points`;
+        document.getElementById("results").innerHTML = "";
 
 
-      graphics = results.features;
-      graphics.forEach((result, index) => {
-        const attributes = result.attributes;
-        const item = document.createElement("calcite-pick-list-item");
-        item.setAttribute("label", attributes.name);
-        item.setAttribute("value", index);
-        item.setAttribute("description", attributes.description);
+        graphics = results.features;
+        graphics.forEach((result, index) => {
+          const attributes = result.attributes;
+          const item = document.createElement("calcite-pick-list-item");
+          item.setAttribute("label", attributes.name);
+          item.setAttribute("value", index);
+          item.setAttribute("description", attributes.description);
 
-        item.addEventListener("click", resultClickHandler);
-        document.getElementById("results").appendChild(item);
+          item.addEventListener("click", resultClickHandler);
+          document.getElementById("results").appendChild(item);
+        });
+
+        // set query for the queryObjectIds.
+        query.orderByFields = [""];
+        const objectIds = await layerDetailedPoints.queryObjectIds(query);
+        layerView.filter = {
+          objectIds
+        };
+
       });
 
-      // set query for the queryObjectIds.
-      query.orderByFields = [""];
-      const objectIds = await layerDetailedPoints.queryObjectIds(query);
-      layerView.filter = {
-        objectIds
-      };
-
-    });
+    };
 
     // this function runs when user clicks on items in the results list
     function resultClickHandler(event) {
@@ -445,7 +452,7 @@ require([
 
     clearQueryButton.addEventListener("click", () => {
       clearQueryButton.appearance = "solid";
-      runQueryButton.appearance = "outline";
+      //runQueryButton.appearance = "outline";
       layerView.filter = null;
       view.closePopup();
       document.getElementById("resultsHeading").innerHTML = `Results`;
