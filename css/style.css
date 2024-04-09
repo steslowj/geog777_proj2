@@ -60,9 +60,11 @@ h1{
   --calcite-z-index-header: 10; /*the default is oddly high*/
 }
 
+/*
 .esri-ui {
-  right: 0 !important; /*infoDiv width shifts over the ui, this fixes the shift*/
+  right: 0 !important; /*corrects padding assigned to viewDiv in map.js
 }
+*/
 
 #resultsDiv {
   overflow: auto;

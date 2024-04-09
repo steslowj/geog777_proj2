@@ -1,3 +1,5 @@
+const { symbol } = require("d3");
+
 require([
   "esri/config",
   "esri/Basemap",
@@ -61,8 +63,6 @@ require([
       url: "https://tiles.arcgis.com/tiles/KlCTOkj6oMImilrU/arcgis/rest/services/ESRI_tiled2017/MapServer",
       title: "Aerial Image"
     })
-
-
 
     // Define layers digitized from Desert Museum map handout and hosted by steslow@wisc.edu_UW_Mad
             const layerDirtPaths = new FeatureLayer({
@@ -167,13 +167,13 @@ require([
               popupEnabled: false,
               labelsVisible: false,
               renderer: await setLayerPointsRenderer(),
-              // popupTemplate: {
-              //   title: "{Type}",
-              //   content: [{
-              //     type: "text", // autocasts as new TextContext
-              //     text: "<p>{Name}</p>"
-              //   }]
-              // }
+              popupTemplate: {
+                title: "{Type}",
+                content: [{
+                  type: "text", // autocasts as new TextContext
+                  text: "<p>{Name}</p>"
+                }]
+              }
             });
             
             const layerDetailedPoints = new FeatureLayer({
@@ -191,6 +191,21 @@ require([
               }
             });
 
+            const layerMemoryPoints = new FeatureLayer({
+              url: "https://services.arcgis.com/HRPe58bUyBqyyiCt/arcgis/rest/services/Memories/FeatureServer",
+              outFields: ["*"],
+              title: "Memories",
+              labelsVisible: false,
+              renderer: await setLayerMemoryPointsRenderer(),
+              popupTemplate: {
+                title: "Memory",
+                content: [{
+                  type: "text", // autocasts as new TextContent
+                  text: "<p>{Memory}</p>"
+                }]
+              }
+            })
+
     /* Link to Arizona-Sonora Desert Museum wayfinding Web Map */
     // /* https://www.arcgis.com/home/item.html?id=63e9481acb8947318c7d5150b00b06c9 */
     // const webmap = new WebMap({
@@ -199,7 +214,7 @@ require([
     //   }
     // });
 
-    const layers = [layerAerial, layerDirtPaths, layerPavedPaths, layerStructures, layerExhibits, layerPoints, layerDetailedPoints]
+    const layers = [layerAerial, layerDirtPaths, layerPavedPaths, layerStructures, layerExhibits, layerPoints, layerDetailedPoints, layerMemoryPoints]
 
     const map = new Map({
       basemap,
@@ -211,9 +226,9 @@ require([
       map: map,
       center: [-111.168, 32.243],
       zoom: 17,
-      padding: {
-        right: 380
-      }
+      // padding: {
+      //   right: 380  // check .esri-ui style in style.css
+      // }
     });
     
     const locateBtn = new Locate({
@@ -245,8 +260,8 @@ require([
         }
       }
     });
-    //view.ui.add(layerList, "bottom-left");
 
+    // Adds layerlist-Legend combo to Expand widget
     const bgExpand = new Expand({
       view: view,
       content: layerList,
@@ -255,6 +270,7 @@ require([
 
     view.ui.add(bgExpand, "bottom-left");
 
+    // places DOM element infoDiv into Expand widget
     const queryExpand = new Expand({
       view: view,
       content: document.getElementById("infoDiv"),
@@ -262,6 +278,13 @@ require([
       expandTooltip: "Query Results Panel",
     });
     view.ui.add(queryExpand, "top-right");
+
+    const editor = new Editor({
+      view: view,
+      expandTooltip: "Add a Memory Point"
+    });
+    view.ui.add(editor, "top-left");
+
 
     // creating parameters to add Desert Museum Illustration PNG and georeference it
     // currently doesn't seem to add the image to the application
@@ -572,6 +595,19 @@ require([
         }]
       };
       return layerDetailedPointsRenderer
-    }    
+    }
+
+    async function setLayerMemoryPointsRenderer() {
+      let layerMemoryPointsRenderer = {
+        type: "simple", // autocasts as new SimpleRenderer()
+        symbol: {
+          type: "picture-marker",
+          url: "https://steslowj.github.io/geog777_proj2/img/bluestar.png",
+          width: "24px",
+          height: "24px",
+        }
+      };
+      return layerMemoryPointsRenderer
+    }
 
   })());
