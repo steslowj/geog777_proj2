@@ -160,11 +160,7 @@ body {
 
 .modal-content p:last-of-type {
   margin-top: 1.5rem;
-}
-
-.modal-app-preview-title {
-  margin-top: 2rem;
-  margin-bottom: 1rem;
+  text-align: center;
 }
 
 /* Add Animation */
@@ -208,6 +204,11 @@ body {
   color: var(--white);
 }
 
+.modal-app-preview-title {
+  margin-top: 2rem;
+  margin-bottom: 1rem;
+}
+
 .modal-app-preview-box {
   border: 2px solid purple;
   width: 80%;
@@ -220,24 +221,25 @@ body {
 }
 
 .modal-app-preview {
-  background: var(--black2);
+  border: black 2px dashed;
   padding: 2px 4px;
-  border-radius: 10px;
   width: auto;
   display: flex;
   flex-direction: column;
   justify-content: space-between;
   align-items: center;
-  cursor: pointer;
-  box-shadow: 0 7px 25px rgba(0, 0, 0, 0.08);
 }
 
 .modal-app-pic {
-  background-color: lightpink;
   padding: 0;
   margin: 0;
-  width: 100%;
+}
 
+.modal-app-pic img{
+  height: 150px;
+  width: auto;
+  border-radius: 26px;
+  box-shadow: 0 7px 25px rgba(0, 0, 0, 0.2);
 }
 /* ======================= Buttons ====================== */
 
