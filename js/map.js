@@ -1,5 +1,3 @@
-const { symbol } = require("d3");
-
 require([
   "esri/config",
   "esri/Basemap",
@@ -106,7 +104,7 @@ require([
               url: "https://services.arcgis.com/HRPe58bUyBqyyiCt/arcgis/rest/services/Desert_Museum_Map_Exhibits/FeatureServer",
               outFields: ["*"],
               title: "Exhibit Areas",
-              labelsVisible: false,
+              labelsVisible: true,
               renderer: {
                 type: "unique-value", // autocasts as new UniqueValueRenderer()
                 field: "Type",
@@ -164,7 +162,6 @@ require([
             const layerPoints = new FeatureLayer({
               url: "https://services.arcgis.com/HRPe58bUyBqyyiCt/arcgis/rest/services/Map_Points/FeatureServer",
               outFields: ["*"],
-              popupEnabled: false,
               labelsVisible: false,
               renderer: await setLayerPointsRenderer(),
               popupTemplate: {
@@ -226,9 +223,9 @@ require([
       map: map,
       center: [-111.168, 32.243],
       zoom: 17,
-      // padding: {
-      //   right: 380  // check .esri-ui style in style.css
-      // }
+      padding: {
+        right: 380  // check .esri-ui style in style.css
+      }
     });
     
     const locateBtn = new Locate({
@@ -280,10 +277,15 @@ require([
     view.ui.add(queryExpand, "top-right");
 
     const editor = new Editor({
+      view: view
+    });
+    
+    const editorExpand = new Expand({
       view: view,
+      content: editor,
       expandTooltip: "Add a Memory Point"
     });
-    view.ui.add(editor, "top-left");
+    view.ui.add(editorExpand, "top-left");
 
 
     // creating parameters to add Desert Museum Illustration PNG and georeference it
@@ -515,17 +517,17 @@ require([
           value: "Entrance/Exit",
           symbol: {
             type: "picture-marker",
-            url: "https://steslowj.github.io/geog777_proj2/img/star.png",
-            width: "20px",
-            height: "20px",
+            url: "https://steslowj.github.io/geog777_proj2/img/bluestar.png",
+            width: "24px",
+            height: "24px",
           }
         }, {
           value: "First Aid",
           symbol: {
             type: "picture-marker",
             url: "https://steslowj.github.io/geog777_proj2/img/firstaid.png",
-            width: "20px",
-            height: "20px",
+            width: "24px",
+            height: "24px",
           }
         }, {
           value: "Food & Drink",
@@ -602,7 +604,7 @@ require([
         type: "simple", // autocasts as new SimpleRenderer()
         symbol: {
           type: "picture-marker",
-          url: "https://steslowj.github.io/geog777_proj2/img/bluestar.png",
+          url: "https://steslowj.github.io/geog777_proj2/img/star.png",
           width: "24px",
           height: "24px",
         }

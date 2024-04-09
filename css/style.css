@@ -51,7 +51,9 @@ h1{
 #infoDiv {
   /* padding: 6px; */
   width: 370px; /*width required as DOM element even though it's inside an Expand widget*/
-  height: calc(97% - var(--titleHeight));
+  /*height: calc(97% - var(--titleHeight)); */
+  max-height: 90vh;
+  overflow-y: auto;
   position: relative;
   /* top: calc(10px + var(--titleHeight)); */
   /* right: 10px; */
@@ -60,11 +62,11 @@ h1{
   --calcite-z-index-header: 10; /*the default is oddly high*/
 }
 
-/*
+
 .esri-ui {
-  right: 0 !important; /*corrects padding assigned to viewDiv in map.js
+  right: 0 !important; /*corrects padding assigned to viewDiv in map.js*/
 }
-*/
+
 
 #resultsDiv {
   overflow: auto;
