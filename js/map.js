@@ -15,6 +15,7 @@ require([
   "esri/rest/support/TopFilter",
   "esri/symbols/WebStyleSymbol",
   "esri/views/MapView",
+  "esri/widgets/Editor",
   "esri/widgets/Expand",
   "esri/widgets/Home",
   "esri/widgets/LayerList",
@@ -36,6 +37,7 @@ require([
     TopFilter,
     WebStyleSymbol, 
     MapView,
+    Editor,
     Expand,
     Home,
     LayerList,
@@ -253,6 +255,13 @@ require([
 
     view.ui.add(bgExpand, "bottom-left");
 
+    const queryExpand = new Expand({
+      view: view,
+      content: document.getElementById("infoDiv"),
+      expanded: "true",
+      expandTooltip: "Query Results Panel",
+    });
+    view.ui.add(queryExpand, "top-right");
 
     // creating parameters to add Desert Museum Illustration PNG and georeference it
     // currently doesn't seem to add the image to the application

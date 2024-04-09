@@ -49,15 +49,19 @@ h1{
 }
 
 #infoDiv {
-  padding: 6px;
-  width: 370px;
+  /* padding: 6px; */
+  width: 370px; /*width required as DOM element even though it's inside an Expand widget*/
   height: calc(97% - var(--titleHeight));
-  position: absolute;
-  top: calc(10px + var(--titleHeight));
-  right: 10px;
+  position: relative;
+  /* top: calc(10px + var(--titleHeight)); */
+  /* right: 10px; */
   --calcite-color-brand: var(--theme-brand);
   --calcite-color-brand-hover: var(--theme-brand-light);
   --calcite-z-index-header: 10; /*the default is oddly high*/
+}
+
+.esri-ui {
+  right: 0 !important; /*infoDiv width shifts over the ui, this fixes the shift*/
 }
 
 #resultsDiv {
@@ -127,7 +131,7 @@ body {
   display: none; 
   position: fixed;
   z-index: 100; 
-  padding-top: 200px; /* Location of the box */
+  padding-top: 8vh; /* Location of the box */
   left: 0;
   top: 0;
   width: 100%; /* Full width */
@@ -151,11 +155,11 @@ body {
   -webkit-animation-duration: 0.4s;
   animation-name: animatetop;
   animation-duration: 0.4s;
-  line-height: 2.0rem;
+  line-height: 1.4rem;
 }
 
 .modal-content h3 {
-  line-height: 2.4rem;
+  margin-bottom: 1rem;
 }
 
 .modal-content p:last-of-type {
@@ -165,12 +169,12 @@ body {
 
 /* Add Animation */
 @-webkit-keyframes animatetop {
-  from {top:-300px; opacity:0} 
+  from {top:-200px; opacity:0} 
   to {top:0; opacity:1}
 }
 
 @keyframes animatetop {
-  from {top:-300px; opacity:0}
+  from {top:-200px; opacity:0}
   to {top:0; opacity:1}
 }
 
@@ -204,25 +208,31 @@ body {
   color: var(--white);
 }
 
+.modal-list {
+  margin-left: 2rem;
+}
+
+.modal-list li {
+  padding: 0.1rem 0;
+}
+
 .modal-app-preview-title {
   margin-top: 2rem;
   margin-bottom: 1rem;
 }
 
 .modal-app-preview-box {
-  border: 2px solid purple;
-  width: 80%;
-  margin: auto;
-  padding: 2px 4px;
+  margin: 2rem auto;
+  width: 90%;
+  padding: 0;
   display: grid;
-  grid-template-columns: repeat(2, 1fr);
-  gap: 20px;
+  grid-template-columns: repeat(4, 1fr);
+  column-gap: 30px;
   transition: 0.5s;
 }
 
 .modal-app-preview {
-  border: black 2px dashed;
-  padding: 2px 4px;
+  padding: 0;
   width: auto;
   display: flex;
   flex-direction: column;
@@ -235,12 +245,17 @@ body {
   margin: 0;
 }
 
-.modal-app-pic img{
-  height: 150px;
+.modal-app-pic img {
+  height: 140px;
   width: auto;
-  border-radius: 26px;
+  border-radius: 20px;
   box-shadow: 0 7px 25px rgba(0, 0, 0, 0.2);
 }
+
+.modal-app-title {
+  text-align: center;
+}
+
 /* ======================= Buttons ====================== */
 
 .buttonBox {
@@ -311,7 +326,7 @@ body {
 
 .buttonBox .btn:active,
 .buttonBox .btn.selected:active {
-  background-color: var(--theme-brand-dark);
+  background-color: var(--theme-brand);
 }
 
 .buttonBox .btn.selected {
@@ -330,6 +345,12 @@ body {
 @media (max-width: 1200px) {
   .topbar h1 {
     font-size: 1.6rem;
+  }
+
+  .modal-app-preview-box {
+    padding: 0;
+    grid-template-columns: repeat(2, 1fr);
+    row-gap: 30px;
   }
 
   .buttonBox {
@@ -407,6 +428,17 @@ body {
     text-align: left;
     width: 10rem;
   }
+}
+
+@media(max-width: 650px){
+  .topbar h1 {
+    font-size: 1.1rem;
+  }
+  .modal-app-preview-box {
+    padding: 0;
+    grid-template-columns: repeat(1, 1fr);
+    row-gap: 16px;
+  }  
 }
 
 

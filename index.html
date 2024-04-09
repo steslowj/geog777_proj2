@@ -27,7 +27,7 @@
 
   <body>
     <div id="titleDiv" class="topbar">
-      <h1>Arizona-Sonora Desert Museum</h1>
+      <h1>Arizona-Sonora Desert Museum Explorer</h1>
       <button type="button" class="topBtn" id="aboutBtn" onclick="modalFunction()">
         <div class="topBtnTitle">About</div>
         <ion-icon name="help-circle-outline"></ion-icon>
@@ -41,40 +41,61 @@
           <h2>About this Web Map</h2>
         </div>
         <div class="modal-body">
-          <h3>Welcome to the Arizona-Sonora Desert Museum Web Explorer!</h3>
-          <p>Click around on the map to view the Desert Museum grounds. Select one of the top boxes to filter the detailed points on the map. Use the legend in the bottom-left corner to adjust the layers visible on the map.<br></p>
+          <h3>Welcome to the Arizona-Sonora Desert Museum Explorer!</h3>
+          <ul class="modal-list">
+            <li>Click around on the map to view the Desert Museum grounds.</li>
+            <li>Select one of the top boxes to filter descriptive points of plants, animals, or facilities.</li>
+            <li>Click the locate button (top-left) to get your current location on the map.</li>
+            <li>Click the home button (top-left) to return the map to default view.</li>
+            <li>Click the layers button (bottom-left) to view the legend and toggle layers in the map view.</li>
+          </ul>
           <h3 class="modal-app-preview-title">Check out these Tour-based applications from the Desert Museum:</h3>
           
           <div class="modal-app-preview-box">
 
             <div class="modal-app-preview">
-              <div class="modal-app-pic">
-                <img src="https://steslowj.github.io/geog777_proj2/img/wayfinding-app.png" alt="View of Desert Museum Entrance">
-              </div>
-              <div class="modal-app-title"><a href="https://arcgis.desertmuseum.org/wayfinding.html" target="_blank">Wayfinding</a></div>
+              <a href="https://arcgis.desertmuseum.org/wayfinding.html" target="_blank">
+                <div class="modal-app-pic">
+                  <img src="https://steslowj.github.io/geog777_proj2/img/wayfinding-app.png" alt="View of Desert Museum Entrance">
+                </div>
+                <div class="modal-app-title">Wayfinding</div>
+              </a>
             </div>
+
             <div class="modal-app-preview">
-              <div class="modal-app-pic">
-                <img src="https://steslowj.github.io/geog777_proj2/img/cactusgarden-app.png" alt="View of Cactus Garden">
-              </div>
-              <div class="modal-app-title"><a href="https://arcgis.desertmuseum.org/" target="_blank">Cactus Garden</a></div>
+              <a href="https://arcgis.desertmuseum.org/" target="_blank">
+                <div class="modal-app-pic">
+                  <img src="https://steslowj.github.io/geog777_proj2/img/cactusgarden-app.png" alt="View of Cactus Garden">
+                </div>
+                <div class="modal-app-title">Cactus Garden</div>
+              </a>
             </div>
+
             <div class="modal-app-preview">
-              <div class="modal-app-pic">
-                <img src="https://steslowj.github.io/geog777_proj2/img/agavegarden-app.png" alt="View of Agave Garden">
-              </div>
-              <div class="modal-app-title"><a href="https://arcgis.desertmuseum.org/agave.html" target="_blank">Agave Garden</a></div>
+              <a href="https://arcgis.desertmuseum.org/agave.html" target="_blank">
+                <div class="modal-app-pic">
+                  <img src="https://steslowj.github.io/geog777_proj2/img/agavegarden-app.png" alt="View of Agave Garden">
+                </div>
+                <div class="modal-app-title">Agave Garden</div>
+              </a>
             </div>
+
             <div class="modal-app-preview">
-              <div class="modal-app-pic">
-                <img src="https://steslowj.github.io/geog777_proj2/img/thornscrub-app.png" alt="View of Thornscrub Garden">
-              </div>
-              <div class="modal-app-title"><a href="https://arcgis.desertmuseum.org/thornscrub.html" target="_blank">Thornscrub Garden</a></div>
+              <a href="https://arcgis.desertmuseum.org/thornscrub.html" target="_blank">
+                <div class="modal-app-pic">
+                  <img src="https://steslowj.github.io/geog777_proj2/img/thornscrub-app.png" alt="View of Thornscrub Garden">
+                </div>
+                <div class="modal-app-title">Thornscrub Garden</div>
+              </a>
             </div>
             
           </div>
 
-          <p>See more at <a href="https://www.desertmuseum.org/" target="_blank"> desertmuseum.org</a></p>
+          <p>
+            See more at <a href="https://www.desertmuseum.org/" target="_blank">desertmuseum.org</a>
+            <br><br>
+            Illustrated <a href="https://www.desertmuseum.org/images/ASDM_map_large_2023.pdf" target="_blank">PDF map</a>
+          </p>
         </div>
         <!-- <div class="modal-footer">
           <h3>Modal Footer</h3>
@@ -120,10 +141,9 @@
 
 
     <div id="viewDiv"></div>
-    <calcite-panel id="infoDiv" class="calcite-mode-light">
+    <calcite-panel id="infoDiv" class="calcite-mode-light" overlayPositioning="absolute">
       <h3 class="heading" slot="header-content">Search Results:</h3>
       <div id="content" style="padding: 5px">
-        
         <div style="width: 360px; max-width: 100%; display: flex; flex-direction: row">
           <!-- <calcite-button id="run-query" width="half" appearance="solid" alignment="center" scale="s">
             Run query
