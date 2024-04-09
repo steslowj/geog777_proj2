@@ -457,6 +457,12 @@ require([
       view.closePopup();
       document.getElementById("resultsHeading").innerHTML = `Results`;
       document.getElementById("results").innerHTML = "";
+
+      allQueryBtns = document.getElementsByClassName("queryBtn");
+      for (let i = 0; i < allQueryBtns.length; i++) {
+        allQueryBtns[i].value = "";
+        allQueryBtns[i].className = "btn queryBtn";
+      };
     });
 
 
