@@ -4,7 +4,7 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="initial-scale=1,maximum-scale=1,user-scalable=no" />
     <title>Arizona-Sonora Desert Museum Explorer | Web Map</title>
-    <!--<title>Query top features from a FeatureLayer | Sample | ArcGIS Maps SDK for JavaScript 4.29</title>-->
+    <link rel="icon" type="image/x-icon" href="img/favicon.ico">
 
     <!-- ArcGIS styles and scripts -->
     <script type="module" src="https://js.arcgis.com/calcite-components/2.5.1/calcite.esm.js"></script>
@@ -44,7 +44,9 @@
           <h3>Welcome to the Arizona-Sonora Desert Museum Explorer!</h3>
           <ul class="modal-list">
             <li>Click around on the map to view the Desert Museum grounds.</li>
-            <li>Select one of the top boxes to filter descriptive points of plants, animals, or facilities.</li>
+            <li>Select one of the top boxes to filter descriptive points of plants, animals, or facilities.
+              <br><img id="filterButtonsPreview" src="https://steslowj.github.io/geog777_proj2/img/filterbuttons.png" alt="Three grouped buttons on the home page that read Plants, Animals, and Facilities">
+            </li>
             <li>Use the Locate button (top-left) to get your current location on the map.</li>
             <li>Use the Home button (top-left) to return the map to default view.</li>
             <li>Use the Editor button (top-left) to add Memory points to the map!</li>
@@ -130,13 +132,6 @@
             <ion-icon name="storefront-outline"></ion-icon>
         </div>
       </button>
-      
-      <!-- <button type="button" class="btn" id="eventsBtn" onclick="eventsBtnFunction()">
-        <div class="btnTitle">Events</div>
-        <div class="iconBx">
-            <ion-icon name="ticket-outline"></ion-icon>
-        </div>
-      </button> -->
 
     </div>
 

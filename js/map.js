@@ -19,6 +19,7 @@ require([
   "esri/widgets/Expand",
   "esri/widgets/Home",
   "esri/widgets/LayerList",
+  "esri/widgets/Legend",
   "esri/widgets/Locate"
 ], (
     esriConfig, 
@@ -41,6 +42,7 @@ require([
     Expand,
     Home,
     LayerList,
+    Legend,
     Locate
     ) =>
   (async () => {
@@ -241,6 +243,8 @@ require([
     });
 
     view.ui.add(homeBtn, "top-left");
+
+
 
     // Add a legend intance of the panel of a ListItem in a LayerList instance
     const layerList = new LayerList({
